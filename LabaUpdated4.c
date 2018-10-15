@@ -95,13 +95,18 @@ int main()
 }
  void WriteLaba (double measfin[], int nMeas, double delta)
 {
-  int n = 0; //n здесь и далее - счетчик номеров переменных в массиве
+//  int n = 0; //n здесь и далее - счетчик номеров переменных в массиве
   double psumm = 0;
   FILE * labres = fopen ("labres.txt", "w");
-  for (n = 0; n <= nMeas - 1; n++)
+  for (int n = 0; n < nMeas ; n++)
   {
     fprintf (labres, "p[%d]=%0.03lg +- %0.02lg \n", n+1, measfin[n], measfin[n] * delta);
     psumm += measfin[n];
+  }
+  for (int n = 0; n < nMeas; n++)
+  {
+    if ((measfin[n] > 1.5 * psumm / nMeas) || (measfin[n] < 0.5 * psumm / nMeas))
+      printf ("something is wrong, check measurements №[%d]", n + 1);
   }
   fprintf (labres, "pavg = %0.03lg +- %0.02lg \n", (psumm/nMeas), (psumm / nMeas * delta));
   fclose (labres);
