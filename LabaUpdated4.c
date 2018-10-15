@@ -14,35 +14,35 @@ void Delta (double meas1[], double meas2[], int nMeas, double* delta);
 void laba1calculations(double* psumm, double meas1[], double meas2[], double measfin[], int n, int nWire);
 double Disp(double meas[], int nMeas);
 double cov (double meas1[], double meas2[], int nMeas, double* measavg);
- int main()
+int main()
 {
-    double meas1[Npoints];
-    double meas2[Npoints];
-    double measfin[Npoints];
-    for (int i = 0; i <= Npoints; i++)
-    {
-      meas1[i] = 0;
-      meas2[i] = 0;
-      measfin[i] = 0;
-    }
+  double meas1[Npoints];
+  double meas2[Npoints];
+  double measfin[Npoints];
+  for (int i = 0; i <= Npoints; i++)
+  {
+    meas1[i] = 0;
+    meas2[i] = 0;
+    measfin[i] = 0;
+  }
     ReadData (meas1 , meas2);
-    int nMeas = ReadData (meas1 , meas2);
+  int nMeas = ReadData (meas1 , meas2);
     if (nMeas <= 0)
-    {
-  	   printf("Can't read file");
-  	   return 1;
-  	}
-    CalculateLaba(meas1, meas2, nMeas, measfin);
-    for (int k = 0; k < nMeas; k++)
-    if (measfin[k++] == 0)
-    {
-      printf("can't calculate measfin[%d]", k );
-      return(0);
-    }
-    double delta = 0;
-    Delta (meas1, meas2, nMeas, &delta);
-    WriteLaba(measfin, nMeas, delta);
-    return (0);
+  {
+	   printf("Can't read file");
+     return 1;
+  }
+  CalculateLaba(meas1, meas2, nMeas, measfin);
+  for (int k = 0; k < nMeas; k++)
+  if (measfin[k++] == 0)
+  {
+    printf("can't calculate measfin[%d]", k );
+    return(0);
+  }
+  double delta = 0;
+  Delta (meas1, meas2, nMeas, &delta);
+  WriteLaba(measfin, nMeas, delta);
+  return (0);
 }
  int ReadData (double meas1[], double meas2[])
 {
