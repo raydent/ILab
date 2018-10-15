@@ -25,9 +25,9 @@ int main()
     meas2[i] = 0;
     measfin[i] = 0;
   }
-    ReadData (meas1 , meas2);
+  ReadData (meas1 , meas2);
   int nMeas = ReadData (meas1 , meas2);
-    if (nMeas <= 0)
+  if (nMeas <= 0)
   {
 	   printf("Can't read file");
      return 1;
