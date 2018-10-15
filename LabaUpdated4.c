@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 const float D = 0.36, Pi = 3.14;
-const int L1 = 20, L2 = 30, L3 = 50;
 const int L[] = {20, 30, 50};
 double deltaL = 0.2, deltaD = 0.01;
 const int Npoints = 100;
@@ -25,13 +24,7 @@ int main()
     meas2[i] = 0;
     measfin[i] = 0;
   }
-  ReadData (meas1 , meas2);
   int nMeas = ReadData (meas1 , meas2);
-  if (nMeas <= 0)
-  {
-	   printf("Can't read file");
-     return 1;
-  }
   CalculateLaba(meas1, meas2, nMeas, measfin);
   for (int k = 0; k < nMeas; k++)
   if (measfin[k++] == 0)
@@ -89,10 +82,8 @@ int main()
   {
     if ((meas1[n] >= 20 * meas1last) || (meas1[n] <= meas1last / 20))
       printf ("global error for measurement 1, №%d \n", n+1);
-    else meas1last = meas1[n];
     if ((meas2[n] >= 20 * meas2last) || (meas2[n] <= meas2last / 20))
       printf ("global error for measurement 2, №%d \n", n +1);
-    else meas2last = meas2[n];
   }
   for (int nWire = 0; nWire < WireAmount; nWire++)
   {
