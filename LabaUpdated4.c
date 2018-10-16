@@ -117,6 +117,10 @@ int main()
   double Disp2 = Disp(meas2, nMeas);
   double measavg = 0;
   double covar = cov (meas1, meas2, nMeas, &measavg);
+  if (measavg == 0)
+    {
+      printf ("can't calculate covaritation, average measerument 1 / average measurement 2 = 0");
+    }
   double delta0 = sqrt((((Disp1 / Disp2) - (covar / Disp1) * (covar / Disp1))) / (nMeas - 2));
   *delta = sqrt ((delta0 / measavg) *(delta0 / measavg) + (deltaL / L[2]) * (deltaL / L[2]) + (deltaD / D) * (deltaD / D));
 }
@@ -137,6 +141,11 @@ int main()
     meas12summ += meas1[n] * meas2[n];
   }
   *measavg = (meas1summ / meas2summ);
+  if (*measavg == 0)
+  {
+    printf ("something is very wrong with the data, average R is zero");
+    return 1;
+  }
   double meas1avg = meas1summ / nMeas;
   double meas2avg = meas2summ / nMeas;
   double meas12avg = meas12summ / nMeas;
