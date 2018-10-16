@@ -95,7 +95,6 @@ int main()
 }
  void WriteLaba (double measfin[], int nMeas, double delta)
 {
-//  int n = 0; //n здесь и далее - счетчик номеров переменных в массиве
   double psumm = 0;
   FILE * labres = fopen ("labres.txt", "w");
   for (int n = 0; n < nMeas ; n++)
