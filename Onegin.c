@@ -13,8 +13,8 @@ typedef struct strct
 char ReadToString(FILE* filetoread, char* giantstring, int filesize);
 int Symbolamount(FILE* filetoread);
 int ReadToNewStrings(char *giantstring, StringContainer* newstrings, int filesize);
-int compforward(const StringContainer*, const StringContainer*);
-int compbackward(const StringContainer*, const StringContainer*);
+int compstarts(const StringContainer*, const StringContainer*);
+int compends(const StringContainer*, const StringContainer*);
 void WriteToFile(FILE* filetowrite, StringContainer*   newstrings, int stringcount);
 char CorrectLetter(int numb, const StringContainer* string);
 
@@ -31,9 +31,9 @@ int main()
   StringContainer* newstrings = (StringContainer*) calloc (filesize, sizeof(StringContainer));
   ReadToString(filetoread, giantstring, filesize);
   int stringcount = ReadToNewStrings(giantstring, newstrings, filesize);
-  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) compforward);
+  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) compstarts);
   WriteToFile(filetowrite, newstrings, stringcount);
-  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) compbackward);
+  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) compends);
   WriteToFile(filetowrite, newstrings, stringcount);
   fclose(filetoread);
   fclose(filetowrite);
@@ -83,7 +83,7 @@ int ReadToNewStrings(char *giantstring, StringContainer* newstrings, int filesiz
   return stringcount;
 }
 
-int compforward(const StringContainer* string1, const StringContainer* string2)
+int compstarts(const StringContainer* string1, const StringContainer* string2)
 {
   char letter1 = 0, letter2 = 0;
   int numb1 = 0, numb2 = 0;
@@ -119,7 +119,7 @@ int compforward(const StringContainer* string1, const StringContainer* string2)
   }
 }
 
-int compbackward(const StringContainer* string1, const StringContainer* string2)
+int compends(const StringContainer* string1, const StringContainer* string2)
 {
 
   char letter1 = 0, letter2 = 0;
@@ -129,10 +129,14 @@ int compbackward(const StringContainer* string1, const StringContainer* string2)
     while ((string1->pointer[numb1]) < 65 || ((string1->pointer[numb1]) > 90 && (string1->pointer[numb1]) < 97) || ((string1->pointer[numb1]) > 122))
     {
       numb1--;
+      if (numb1 == 0)
+        return 1;
     }
     while ((string2->pointer[numb2]) < 65 || ((string2->pointer[numb2]) > 90 && (string2->pointer[numb2]) < 97) || (string2->pointer[numb2]) > 122)
     {
       numb2--;
+      if (numb2 == 0)
+        return -1;
     }
     letter1 = CorrectLetter(numb1, string1);
     letter2 = CorrectLetter(numb2, string2);
