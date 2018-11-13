@@ -13,7 +13,10 @@ typedef struct strct
 char ReadToString(FILE* filetoread, char* giantstring, int filesize);
 int Symbolamount(FILE* filetoread);
 int ReadToNewStrings(char *giantstring, StringContainer* newstrings, int filesize);
-int comp(const StringContainer*, const StringContainer*);
+int compforward(const StringContainer*, const StringContainer*);
+int compbackward(const StringContainer*, const StringContainer*);
+void WriteToFile(FILE* filetowrite, StringContainer*   newstrings, int stringcount);
+char CorrectLetter(int i, const StringContainer* string);
 
 int main()
 {
@@ -28,15 +31,12 @@ int main()
   StringContainer* newstrings = (StringContainer*) calloc (filesize, sizeof(StringContainer));
   ReadToString(filetoread, giantstring, filesize);
   int stringcount = ReadToNewStrings(giantstring, newstrings, filesize);
-  printf("biba\n");
-  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) comp);
-  for (int i = 0; i <= stringcount; i++)
-  {
-    //printf("%s %d\n", newstrings[i].pointer, newstrings[i].charnum);
-    fwrite(newstrings[i].pointer, sizeof(char), newstrings[i].charnum, filetowrite);
-    fprintf(filetowrite, "\n");
-  }
-  return stringcount;
+  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) compforward);
+  // WriteToFile(filetowrite, newstrings, stringcount);
+  qsort(newstrings, stringcount, sizeof(StringContainer), (int(*) (const void *, const void *)) compbackward);
+  WriteToFile(filetowrite, newstrings, stringcount);
+  fclose(filetoread);
+  fclose(filetowrite);
 }
 
 int Symbolamount(FILE* filetoread)
@@ -44,7 +44,7 @@ int Symbolamount(FILE* filetoread)
   struct stat st = {};
   stat ("original.txt", &st);
   int symbolamount = 0;
-  symbolamount = (int)st.st_size;
+  symbolamount = st.st_size;
   printf("количество символов = %d\n", symbolamount);
   return symbolamount;
 }
@@ -80,79 +80,89 @@ int ReadToNewStrings(char *giantstring, StringContainer* newstrings, int filesiz
       newstrings[stringcount].pointer = &giantstring[i + 1];
     }
   }
-  // printf("%d\n", stringcount);
-  // for (int i = 0; i <= stringcount; i++)
-  // {
-  //   printf("%s %d\n", newstrings[i].pointer, newstrings[i].charnum);
-  // }
   return stringcount;
 }
-int comp(const StringContainer* string1, const StringContainer* string2)
+
+int compforward(const StringContainer* string1, const StringContainer* string2)
 {
-  // int max = 0;
-  // if (string1->charnum > string2->charnum)
-  //   max = string1->charnum;
-  // else
-  //   max = string2->charnum;
-  // for (int i = 0; i < max; i++)
-  // {
-  // if (string1->pointer[i] > string2->pointer[i])
-  //   return 1;
-  // if (string1->pointer[i] < string2->pointer[i])
-  //   return -1;
-  // }
-  int ncharmax = 0;
-  if (string2->charnum > string1->charnum)
-    ncharmax = string2->charnum;
-  else
-    ncharmax = string1->charnum;
-  int letter1 = 0, letter2 = 0;
+  char letter1 = 0, letter2 = 0;
   int i1 = 0, i2 = 0;
   for (;;)
   {
-    if (((int)string1->pointer[i1] == 0) && ((int)string2->pointer[i2] == 0))
+    if ((string1->pointer[i1] == 0) && (string2->pointer[i2] == 0))
       return 0;
-    if ((int)string1->pointer[i1] == 0)
+    if (string1->pointer[i1] == 0)
       return -1;
-    if ((int)string2->pointer[i2] == 0)
+    if (string2->pointer[i2] == 0)
       return 1;
-    if (((int)(string1->pointer[i1]) >= 65) && ((int)string1->pointer[i1] <= 90))
+    while ((string1->pointer[i1]) < 65 || ((string1->pointer[i1]) > 90 && (string1->pointer[i1]) < 97) || ((string1->pointer[i1]) > 122))
     {
-      letter1 = ((int)string1->pointer[i1]) + 32;
+      i1++;
     }
-    if (((int)string1->pointer[i1] >= 97) && ((int)string1->pointer[i1] <= 122))
+    while ((string2->pointer[i2]) < 65 || ((string2->pointer[i2]) > 90 && (string2->pointer[i2]) < 97) || (string2->pointer[i2]) > 122)
     {
-      letter1 = (int)string1->pointer[i1];
+      i2++;
     }
-    else
-    {
-      while (((int)string1->pointer[i1]) < 65 || (((int)string1->pointer[i1]) > 90 && ((int)string1->pointer[i1]) < 97) || (((int)string1->pointer[i1]) > 122))
-      {
-        i1++;
-      }
-      letter1 = (int)string1->pointer[i1];
-    }
-    if (((int)(string2->pointer[i2]) >= 65) && ((int)string2->pointer[i2] <= 90))
-    {
-      letter2 = ((int)string2->pointer[i2]) + 32;
-    }
-    if (((int)string2->pointer[i2] >= 97) && ((int)string2->pointer[i2] <= 122))
-    {
-      letter2 = (int)string2->pointer[i2];
-    }
-    else
-    {
-      while (((int)string2->pointer[i2]) < 65 || (((int)string2->pointer[i2]) > 90 && ((int)string2->pointer[i2]) < 97) || ((int)string2->pointer[i2]) > 122)
-      {
-        i2++;
-      }
-      letter2 = (int)string2->pointer[i2];
-    }
+    letter1 = CorrectLetter(i1, string1);
+    letter2 = CorrectLetter(i2, string2);
     if (letter1 > letter2)
       return 1;
     if (letter1 < letter2)
       return -1;
     i1++;
     i2++;
+  }
+}
+
+int compbackward(const StringContainer* string1, const StringContainer* string2)
+{
+
+  char letter1 = 0, letter2 = 0;
+  int i1 = string1->charnum, i2 = string2->charnum;
+  for (;;)
+  {
+    while ((string1->pointer[i1]) < 65 || ((string1->pointer[i1]) > 90 && (string1->pointer[i1]) < 97) || ((string1->pointer[i1]) > 122))
+    {
+      i1--;
+    }
+    while ((string2->pointer[i2]) < 65 || ((string2->pointer[i2]) > 90 && (string2->pointer[i2]) < 97) || (string2->pointer[i2]) > 122)
+    {
+      i2--;
+    }
+    letter1 = CorrectLetter(i1, string1);
+    letter2 = CorrectLetter(i2, string2);
+    if (letter1 > letter2)
+      return 1;
+    if (letter1 < letter2)
+      return -1;
+    if ((i1 == 0) && (i2 == 0))
+      return 0;
+    if (i1 == 0)
+      return -1;
+    if (i2 == 0)
+      return 1;
+    i1--;
+    i2--;
+  }
+}
+char CorrectLetter(int i, const StringContainer* string)
+{
+  char letter = 0;
+  if (((string->pointer[i]) >= 65) && (string->pointer[i] <= 90))
+  {
+    letter = (string->pointer[i]) + 32;
+  }
+  if ((string->pointer[i] >= 97) && (string->pointer[i] <= 122))
+  {
+    letter = string->pointer[i];
+  }
+  return letter;
+}
+void WriteToFile(FILE* filetowrite, StringContainer* newstrings, int stringcount)
+{
+  for (int i = 0; i <= stringcount; i++)
+  {
+    fprintf(filetowrite, "%s", newstrings[i].pointer);
+    fprintf(filetowrite, "\n");
   }
 }
