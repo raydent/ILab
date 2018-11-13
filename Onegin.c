@@ -98,11 +98,16 @@ int compforward(const StringContainer* string1, const StringContainer* string2)
     while ((string1->pointer[numb1]) < 65 || ((string1->pointer[numb1]) > 90 && (string1->pointer[numb1]) < 97) || ((string1->pointer[numb1]) > 122))
     {
       numb1++;
+      if (numb1 == string1->charnum)
+        return 1;
     }
     while ((string2->pointer[numb2]) < 65 || ((string2->pointer[numb2]) > 90 && (string2->pointer[numb2]) < 97) || (string2->pointer[numb2]) > 122)
     {
       numb2++;
+      if (numb2 == string2->charnum)
+        return -1;
     }
+
     letter1 = CorrectLetter(numb1, string1);
     letter2 = CorrectLetter(numb2, string2);
     if (letter1 > letter2)
