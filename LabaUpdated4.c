@@ -27,7 +27,7 @@ int main()
   int nMeas = ReadData (meas1 , meas2);
   CalculateLaba(meas1, meas2, nMeas, measfin);
   for (int k = 0; k < nMeas; k++)
-  if (measfin[k++] == 0)
+  if (measfin[k] == 0)
   {
     printf("can't calculate measfin[%d]", k );
     return(0);
@@ -81,9 +81,9 @@ int main()
   for (int n = 0; n < nMeas; n++)
   {
     if ((meas1[n] >= 20 * meas1last) || (meas1[n] <= meas1last / 20))
-      printf ("global error for measurement 1, №%d \n", n+1);
+      printf ("global error for measurement 1, №%d \n", n + 1);
     if ((meas2[n] >= 20 * meas2last) || (meas2[n] <= meas2last / 20))
-      printf ("global error for measurement 2, №%d \n", n +1);
+      printf ("global error for measurement 2, №%d \n", n + 1);
   }
   for (int nWire = 0; nWire < WireAmount; nWire++)
   {
