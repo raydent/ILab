@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <stdlib.h>
@@ -20,7 +19,7 @@ char CorrectLetter(int numb, const StringContainer* string);
 
 int main()
 {
-  FILE* filetoread= fopen ("original.txt", "r");
+  FILE* filetoread= fopen ("original.txt", "rb");
   FILE* filetowrite = fopen ("rework.txt", "w");
   if (!filetoread)
     printf("can't read file");
@@ -121,7 +120,6 @@ int compstarts(const StringContainer* string1, const StringContainer* string2)
 
 int compends(const StringContainer* string1, const StringContainer* string2)
 {
-
   char letter1 = 0, letter2 = 0;
   int numb1 = string1->charnum, numb2 = string2->charnum;
   for (;;)
