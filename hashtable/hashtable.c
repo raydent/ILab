@@ -5,11 +5,25 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <strings.h>
-long long int hash(long long int number){
+long long int hash1(long long int number){
   long long int val = 0;
-  // val = (number % hash2) + ((number % hash1) * (number % hash3));
-  val = number % 3;
+  val = (number % HASH2) + ((number % HASH1) * (number % HASH3));
   return val;
+}
+long long int hash2(long long int number){
+  long long int val = 0;
+  val = (number % 10) + (number % 100) + (number % 1000) + (number % 10000) + (number / 1000 % 10000);
+  return val;
+}
+long long int hash3(long long int number){
+  long long int val = 0;
+  val = (number << KEY) >> (4 * KEY);
+  return val;
+}
+long long int hash4(long long int number){
+  long long int val = 0;
+  long long int num = number;
+  val = (number / HASH1) % CONSTDIV;
 }
 
 int FindList(list** table, long long int number, int n){
@@ -23,6 +37,11 @@ int FindList(list** table, long long int number, int n){
 }
 
 list* AddContact(list* list_, long long int number, int n, char* word){
+  if (list_ -> head != NULL){
+    if (list_ -> head -> val == number){
+      return NULL;
+    }
+  }
   PushHead(list_, number);
   list_ -> head -> name = (char*) calloc(20, sizeof(char*));
   strcpy(list_ -> head -> name, word);
@@ -31,21 +50,17 @@ list* AddContact(list* list_, long long int number, int n, char* word){
 
 list** FillList(list** table, FILE* f, int* n){
   long long int number = 0;
-  printf("hash(num) = %lld\n", hash(number));
   char* word = (char*) calloc (20, sizeof(char*));
   for (;;){
-    printf("n = %d\n", *n);
     if (fscanf(f,"%lld", &number) == EOF){
       break;
     }
-    printf("hash(num) = %lld\n", hash(number));
     if (number == 0){
       break;
     }
     fgets(word, 20, f);
     if (table[0] -> head == NULL){
       AddContact(table[0], number, *n, word);
-      // printf("%lld\n", hash(number));
     }
     else{
       int num = FindList(table, number, *n);
@@ -54,7 +69,6 @@ list** FillList(list** table, FILE* f, int* n){
         table = (list**) realloc(table, (*n) * sizeof(list**));
         table[*n - 1] = ListConstr();
         AddContact(table[*n - 1], number, *n, word);
-        // table[*n - 1] -> num -= 1;
       }
       if (num != -1){
         AddContact(table[num], number, *n, word);
@@ -98,11 +112,11 @@ node* Finder(list** table, int n){
 
 int collisioncount(list** table, int n){
   int counter = 1;
+  long long int* corr = (long long int*) calloc (n, sizeof(long long int*));
   FILE* xls = fopen("collisin.txt", "w");
   for (int i = 0; i < n; i++){
-    node* node_ = table[i] -> head;
+    corr[i] = table[i] -> hashsum;
     fprintf(xls, "%d\n ", table[i] -> num);
     }
     fclose(xls);
-
 }

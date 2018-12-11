@@ -7,9 +7,11 @@
 const int OK = 123451;
 const int OK2 = 223597;
 const int CHECK = 2;
-const int hash1 = 132145;
-const int hash2 = 23125;
-const int hash3 = 9881;
+const int HASH1 = 132145;
+const int HASH2 = 23125;
+const int HASH3 = 9881;
+const int KEY = 8;
+const int CONSTDIV = 137;
 typedef struct node {
   int canary1;
   int canary2;
