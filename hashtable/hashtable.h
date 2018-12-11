@@ -46,11 +46,12 @@ void Erase(list* list_);
 void PrintList(list* list_);
 void ListDestruct(list* list_);
 long long int hash(long long int number);
-list** FillList(list** table, FILE* f, int* n);
+list** FillList(list** table, FILE* f, int* n, long long int (*hash) (long long int));
 int Printer(list** table, int n);
-node* Finder(list** table, int n);
+node* Finder(list** table, int n, long long int (*hash) (long long int));
 int collisioncount(list** table, int n);
-list** FillTable(list** table, FILE* file, int* n);
-int FindList(list** table, long long int number, int n);
+list** FillTable(list** table, FILE* file, int* n, long long int (*hash) (long long int));
+int FindList(list** table, long long int number, int n, long long int (*hash) (long long int));
+list** AddElem(list** table, int* n,  long long int (*hash) (long long int));
 #include "list.c"
 #include "hashtable.c"

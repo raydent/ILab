@@ -26,7 +26,7 @@ long long int hash4(long long int number){
   val = (number / HASH1) % CONSTDIV;
 }
 
-int FindList(list** table, long long int number, int n){
+int FindList(list** table, long long int number, int n, long long int (*hash) (long long int)){
   long long int def = hash(number);
   list* list_ = NULL;
   for (int i = 0; i < n; i++){
@@ -35,8 +35,7 @@ int FindList(list** table, long long int number, int n){
   }
   return -1;
 }
-
-list* AddContact(list* list_, long long int number, int n, char* word){
+list* AddContact(list* list_, long long int number, int n, char* word, long long int (*hash) (long long int)){
   if (list_ -> head != NULL){
     if (list_ -> head -> val == number){
       return NULL;
@@ -47,8 +46,36 @@ list* AddContact(list* list_, long long int number, int n, char* word){
   strcpy(list_ -> head -> name, word);
   list_ -> hashsum = hash(number);
 }
-
-list** FillList(list** table, FILE* f, int* n){
+list** AddElem(list** table, int* n, long long int (*hash) (long long int)){
+  long long int number = 0;
+  printf("Введите число\n");
+  printf("Введите имя\n");
+  scanf("%lld", &number);
+  char* word = (char*) calloc (20, sizeof (char*));
+  fgets(word, 20, stdin);
+  int num = FindList(table, number, *n, hash);
+  node* node_ = NULL;
+  if (num == -1){
+    *n += 1;
+    table = (list**) realloc(table, (*n) * sizeof(list**));
+    table[*n - 1] = ListConstr();
+    if (AddContact(table[*n - 1], number, *n, word, hash) == NULL)
+      printf("Wrong number\n");
+  }
+  if (num != -1){
+    for (int i = 0; i < table[num] -> num; i++){
+      node_ = table[num] -> head;
+      if (node_ -> val == number){
+        printf("Wrong number\n");
+        return NULL;
+      }
+      node_ = node_ -> next;
+    }
+    if(AddContact(table[num], number, *n, word, hash) == NULL)
+      printf("Wrong number\n");
+  }
+}
+list** FillList(list** table, FILE* f, int* n, long long int (*hash) (long long int)){
   long long int number = 0;
   char* word = (char*) calloc (20, sizeof(char*));
   for (;;){
@@ -60,18 +87,18 @@ list** FillList(list** table, FILE* f, int* n){
     }
     fgets(word, 20, f);
     if (table[0] -> head == NULL){
-      AddContact(table[0], number, *n, word);
+      AddContact(table[0], number, *n, word, hash);
     }
     else{
-      int num = FindList(table, number, *n);
+      int num = FindList(table, number, *n, hash);
       if (num == -1){
         *n += 1;
         table = (list**) realloc(table, (*n) * sizeof(list**));
         table[*n - 1] = ListConstr();
-        AddContact(table[*n - 1], number, *n, word);
+        AddContact(table[*n - 1], number, *n, word, hash);
       }
       if (num != -1){
-        AddContact(table[num], number, *n, word);
+        AddContact(table[num], number, *n, word, hash);
       }
     }
   }
@@ -84,7 +111,7 @@ int Printer(list** table, int n){
       printf("\n \n \n");
   }
 }
-node* Finder(list** table, int n){
+node* Finder(list** table, int n, long long int (*hash) (long long int)){
   printf("Введите номер");
   long long int number = 0;
   scanf("%lld", &number);
@@ -119,4 +146,11 @@ int collisioncount(list** table, int n){
     fprintf(xls, "%d\n ", table[i] -> num);
     }
     fclose(xls);
+}
+void deleteHash(list** table, int* n){
+  for (int i = 0; i < *n; i++){
+    ListDestruct(table[i]);
+  }
+  free(table);
+  *n = 0;
 }
