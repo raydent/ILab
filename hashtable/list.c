@@ -13,10 +13,10 @@ void CheckNode(node* node_){
     printf("BROKEN NODE");
     exit(0);
   }
-  if (node_ -> checksum != node_ -> val * CHECK){
-    printf("BROKEN NODE");
-    exit(0);
-  }
+  // if (node_ -> checksum != node_ -> val * CHECK){
+  //   printf("BROKEN NODE");
+  //   exit(0);
+  // }
 }
 void CheckList(list* list_){
   if (!list_){
