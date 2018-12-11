@@ -8,9 +8,7 @@ int main() {
   FILE* f = fopen("source.dat", "r");
   table = FillList(table, f, &n, hash4);
   collisioncount(table, n);
-  fwrite(table[n - 1] -> head -> name, sizeof(char), 20, stdout);
   AddElem(table, &n, hash4);
-  fwrite(table[n - 1] -> head -> name, sizeof(char), 20, stdout);
   Finder(table, n, hash4);
   deleteHash(table, &n);
   // printf("%d\n", table[0] -> num);

@@ -48,8 +48,7 @@ list* AddContact(list* list_, long long int number, int n, char* word, long long
 }
 list** AddElem(list** table, int* n, long long int (*hash) (long long int)){
   long long int number = 0;
-  printf("Введите число\n");
-  printf("Введите имя\n");
+  printf("Введите число и имя\n");
   scanf("%lld", &number);
   char* word = (char*) calloc (20, sizeof (char*));
   fgets(word, 20, stdin);
@@ -63,8 +62,8 @@ list** AddElem(list** table, int* n, long long int (*hash) (long long int)){
       printf("Wrong number\n");
   }
   if (num != -1){
-    for (int i = 0; i < table[num] -> num; i++){
-      node_ = table[num] -> head;
+    node_ = table[num] -> head;
+    for (int i = 0; i <= (table[num] -> num); i++){
       if (node_ -> val == number){
         printf("Wrong number\n");
         return NULL;
