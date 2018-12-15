@@ -27,7 +27,7 @@ long long int hash4(long long int number){
 }
 
 int FindList(list** table, long long int number, int n, long long int (*hash) (long long int)){
-  long long int def = hash(number);
+  long long int def = hash(number) % SIZE;
   list* list_ = NULL;
   for (int i = 0; i < n; i++){
     if (table[i] -> hashsum == def)
@@ -44,7 +44,7 @@ list* AddContact(list* list_, long long int number, int n, char* word, long long
   PushHead(list_, number);
   list_ -> head -> name = (char*) calloc(20, sizeof(char*));
   strcpy(list_ -> head -> name, word);
-  list_ -> hashsum = hash(number);
+  list_ -> hashsum = hash(number) % SIZE;
 }
 list** AddElem(list** table, int* n, long long int (*hash) (long long int)){
   long long int number = 0;
@@ -114,7 +114,7 @@ node* Finder(list** table, int n, long long int (*hash) (long long int)){
   printf("Введите номер");
   long long int number = 0;
   scanf("%lld", &number);
-  int def = hash(number);
+  int def = hash(number) % SIZE;
   for (int i = 0; i < n; i++){
     if (table[i] -> hashsum == def){
       node* node_ = table[i] -> head;
@@ -146,6 +146,28 @@ int collisioncount(list** table, int n){
     }
     fclose(xls);
 }
+double Disp(list** table, int nMeas, double* avgdiv, double* maxdiv)
+{
+ double meassum = 0, dispsumm = 0;
+ double max = 0;
+ double avg = 0;
+ for (int n = 0; n < nMeas; n++)
+ {
+   meassum += table[n] -> num;
+ }
+ for (int n = 0; n < nMeas; n++)
+ {
+   avg+=fabs(table[n] -> num - (meassum / nMeas));
+   if (fabs(table[n] -> num - (meassum / nMeas) > max)){
+     max = fabs(table[n] -> num - (meassum / nMeas));
+   }
+   dispsumm += (table[n] -> num - (meassum / nMeas)) * (table[n] -> num - (meassum / nMeas));
+ }
+ *avgdiv = avg / nMeas;
+ *maxdiv = max;
+ return (dispsumm/nMeas);
+}
+
 void deleteHash(list** table, int* n){
   for (int i = 0; i < *n; i++){
     ListDestruct(table[i]);

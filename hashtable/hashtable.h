@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 const int OK = 123451;
 const int OK2 = 223597;
 const int CHECK = 2;
@@ -53,5 +54,6 @@ int collisioncount(list** table, int n);
 list** FillTable(list** table, FILE* file, int* n, long long int (*hash) (long long int));
 int FindList(list** table, long long int number, int n, long long int (*hash) (long long int));
 list** AddElem(list** table, int* n,  long long int (*hash) (long long int));
+double Disp(list** table, int nMeas, double* avgdiv, double* maxdiv);
 #include "list.c"
 #include "hashtable.c"
